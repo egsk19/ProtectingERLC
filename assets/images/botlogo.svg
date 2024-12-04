@@ -1,9 +1,5 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <pattern id="gif-pattern" patternUnits="userSpaceOnUse" width="500" height="500">
-            <image href="https://i.imgur.com/8DHAKJx.gif" x="0" y="0" width="500" height="500"/>
-        </pattern>
-    </defs>
-    <rect width="500" height="500" fill="url(#gif-pattern)" />
-    <!-- Other SVG content -->
+  <image href="https://i.imgur.com/8DHAKJx.gif" x="0" y="0" height="500" width="500"/>
+  <path d="M128.092 185.421C138.033 187.751..." fill="white"/>
+  <!-- Other paths or SVG content -->
 </svg>
