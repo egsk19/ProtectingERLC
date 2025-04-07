@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@ProtectingERLC Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #36393f;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #2f3136;
+      border-radius: 8px;
+      padding: 30px;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #5865f2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #4752c4;
+    }
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+    #response {
+      margin-top: 20px;
+      padding: 15px;
+      background: #202225;
+      border-radius: 4px;
+      min-height: 50px;
+      text-align: left;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    .success {
+      border-left: 4px solid #3ba55c;
+    }
+    .error {
+      border-left: 4px solid #ed4245;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>@ProtectingERLC dashboard</h2>
+    <button id="triggerBtn">SEND TEST WEBHOOK</button>
+    <div id="response">Ready to send request...</div>
+  </div>
+
+  <script>
+    (function() {
+      // Define the API endpoint, proxy (if needed), and API key.
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      const webhookUrl = 'https://api.botghost.com/webhook/1219347774621876345/opk9uim74lgs87symxmgr7';
+      const apiKey = 'e7f0be1f82a22409207e595e74bf8f5309c7844e5d3a5878914c720327bf452f';
+
+      // isSending flag ensures only one request is processed at a time.
+      let isSending = false;
+
+      async function sendWebhook() {
+        if (isSending) return; // Exit if a request is already in progress.
+        isSending = true;
+
+        const triggerBtn = document.getElementById('triggerBtn');
+        const responseDiv = document.getElementById('response');
+
+        // Disable the button and update the UI.
+        triggerBtn.disabled = true;
+        responseDiv.textContent = "Sending request...";
+        responseDiv.className = "";
+
+        console.log("Sending API Request");
+
+        try {
+          const response = await fetch(proxyUrl + webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': apiKey,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              variables: [{
+                name: "message",
+                variable: "{event_message}",
+                value: "HELLO from webhooks"
+              }]
+            })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            responseDiv.textContent = `✅ Success!\nResponse: ${JSON.stringify(data)}`;
+            responseDiv.className = "success";
+          } else {
+            const errorText = await response.text();
+            responseDiv.textContent = `❌ Error ${response.status}: ${errorText}`;
+            responseDiv.className = "error";
+          }
+        } catch (error) {
+          console.error("Error sending API Request:", error);
+          responseDiv.textContent = `❌ Network Error: ${error.message}`;
+          responseDiv.className = "error";
+        } finally {
+          isSending = false;
+          triggerBtn.disabled = false;
+          console.log("Finished API Request");
+        }
+      }
+
+      // Attach the click event listener only once.
+      document.getElementById('triggerBtn').addEventListener('click', sendWebhook);
+    })();
+  </script>
+</body>
+</html>
