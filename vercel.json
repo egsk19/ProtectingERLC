@@ -1,0 +1,9 @@
+{
+  "routes": [
+    {
+      "src": "/.well-known/(.*)",
+      "headers": { "Content-Type": "text/plain" },
+      "continue": true
+    }
+  ]
+}
